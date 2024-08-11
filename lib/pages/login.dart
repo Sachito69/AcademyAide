@@ -81,6 +81,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 25.0),
               // login button
               MyButton(
+                buttonText: 'Login',
                 onTap: () {
                   Navigator.pushNamed(context, '/homepage');
                 },
