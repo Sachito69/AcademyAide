@@ -13,7 +13,7 @@ class SettingsModal extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          
           borderRadius: BorderRadius.circular(16.0),
         ),
         child: Column(
