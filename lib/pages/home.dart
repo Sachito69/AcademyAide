@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/components/floatingButton.dart';
 import 'package:project/components/weekBar.dart';
+import 'package:intl/intl.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -12,17 +13,11 @@ class _HomepageState extends State<Homepage> {
     'Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'
   ];
 
-  final List<String> hoursOfDay = List.generate(24, (index) {
-    if (index == 0) {
-      return '12 AM';
-    } else if (index == 12) {
-      return '12 NN';
-    } else if (index < 12) {
-      return '${index} AM';
-    } else {
-      return '${index - 12} PM';
-    }
-  });
+  // Generate a list of the next 30 days starting from today
+  final List<DateTime> dates = List.generate(
+    30,
+    (index) => DateTime.now().add(Duration(days: index)),
+  );
 
   int selectedDayIndex = 0;
 
@@ -43,10 +38,32 @@ class _HomepageState extends State<Homepage> {
           Expanded(
             child: PageView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: hoursOfDay.length,
+              itemCount: dates.length,
+              onPageChanged: (index) {
+                setState(() {
+                  selectedDayIndex = index;
+                });
+              },
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(hoursOfDay[index]),
+                DateTime date = dates[index];
+                return Column(
+                  children: [
+                    Text(
+                      DateFormat('EEEE, MMMM d, y').format(date),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: 24,
+                        itemBuilder: (context, hourIndex) {
+                          String hour = _getFormattedHour(hourIndex);
+                          return ListTile(
+                            title: Text(hour),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -55,5 +72,17 @@ class _HomepageState extends State<Homepage> {
       ),
       floatingActionButton: const CustomFloatingActionButton(),
     );
+  }
+
+  String _getFormattedHour(int hourIndex) {
+    if (hourIndex == 0) {
+      return '12 AM';
+    } else if (hourIndex == 12) {
+      return '12 NN';
+    } else if (hourIndex < 12) {
+      return '${hourIndex} AM';
+    } else {
+      return '${hourIndex - 12} PM';
+    }
   }
 }
